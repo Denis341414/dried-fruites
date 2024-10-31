@@ -1,13 +1,9 @@
 <script setup>
 import { RouterLink, useRoute } from "vue-router";
 import { useItemStore } from "../../../stores/item";
-import { callWithAsyncErrorHandling, ref, watch } from "vue";
+import { ref, watch } from "vue";
 
 const route = useRoute();
-
-function switchRoute() {
-  event;
-}
 
 const store = useItemStore();
 </script>
@@ -44,10 +40,10 @@ const store = useItemStore();
     <div class="header_line_right">
       <div class="number_phone">+7 999 999 99 99</div>
       <div class="favourites">Избранное</div>
-      <div class="basket">
+      <RouterLink to="/Basket" class="basket">
         Корзина
         <div class="quantity">{{ store.basket }}</div>
-      </div>
+      </RouterLink>
     </div>
   </div>
 </template>
@@ -111,6 +107,8 @@ const store = useItemStore();
   width: 150px;
   height: 50px;
   border-radius: 20px;
+  text-decoration: none;
+  color: black;
 }
 .quantity {
   display: flex;
