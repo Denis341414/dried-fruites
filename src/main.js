@@ -1,4 +1,4 @@
-import { createApp } from "vue";
+import { createApp, provide } from "vue";
 import { createWebHashHistory, createRouter } from "vue-router";
 import { createPinia } from "pinia";
 import { watch } from "vue";

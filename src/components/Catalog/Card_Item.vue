@@ -1,10 +1,11 @@
 <script setup>
-import { onMounted, ref } from "vue";
+import { onMounted, ref, inject } from "vue";
 import axios from "axios";
 
 import Footer from "../Main_page/footer/Footer.vue";
 import HeaderLine from "../Main_page/header/header_line.vue";
 import MainFooter from "../Main_page/main/main_footer.vue";
+import related_Products from "./related_Products.vue";
 import { RouterLink } from "vue-router";
 
 const defaultWeight = ref(300);
@@ -40,6 +41,8 @@ onMounted(async () => {
     })
     .catch((err) => console.log(err));
 });
+
+onMounted(inject("scrollTo"));
 </script>
 
 <template>
@@ -97,29 +100,7 @@ onMounted(async () => {
       <button class="in_basket">В корзину</button>
     </div>
   </div>
-  <div class="related_products">
-    <div class="related_products_title">Сопутствующие товары</div>
-    <div class="cont_related_cards">
-      <div class="card" v-for="(el, index) in relatedProducts" :key="index">
-        <img
-          class="card_image"
-          src="../Main_page/main/assets/acfa6abfb0b4ae9a319c99c4875f3915 4.svg"
-          alt="img"
-        />
-        <div class="card_title">{{ el.name }}</div>
-        <div class="price">
-          <div class="price_now">От {{ el.price }} р</div>
-          <div class="price_before">От {{ el.price + 50 }} р</div>
-        </div>
-        <div class="button_card">
-          <button class="switcher"></button>
-          <button class="searching"></button>
-          <button></button>
-          <button class="in_basket">В корзину</button>
-        </div>
-      </div>
-    </div>
-  </div>
+  <related_Products />
   <MainFooter />
   <Footer />
 </template>
@@ -127,6 +108,17 @@ onMounted(async () => {
 <style scoped lang="scss">
 .back_to_catalog {
   text-decoration: none;
+  color: black;
+  font-weight: 700;
+  font-size: 1.3em;
+  border: 3px solid rgb(255, 221, 0);
+  padding: 0.5em;
+  border-radius: 2em;
+}
+.back_to_catalog:hover {
+  background-color: rgb(255, 221, 0);
+  color: #fff;
+  box-shadow: 1px 1px 10px rgb(176, 176, 176);
 }
 .title {
   text-align: center;

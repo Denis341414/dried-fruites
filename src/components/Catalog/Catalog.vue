@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, watch, provide } from "vue";
+import { ref, onMounted, watch, inject } from "vue";
 import axios from "axios";
 
 import Footer from "../Main_page/footer/Footer.vue";
@@ -84,8 +84,18 @@ function Sorted() {
   console.log(pages.value);
 }
 
+function getClickItem(el) {
+  if (localStorage.getItem("ItemCard")) {
+    localStorage.removeItem("ItemCard");
+    localStorage.setItem("ItemCard", JSON.stringify(el));
+  } else {
+    localStorage.setItem("ItemCard", JSON.stringify(el));
+  }
+}
+
 onMounted(getFruites);
 watch(categories, Sorted);
+onMounted(inject("scrollTo"));
 </script>
 
 <template>
@@ -150,17 +160,14 @@ watch(categories, Sorted);
             <button class="in_basket">В корзину</button>
           </div>
         </div>
-        <div
-          class="card"
-          v-for="el in arrSort"
-          v-else
-          @click="getParamItem(el)"
-        >
-          <img
-            class="card_image"
-            src="../Main_page/main/assets/acfa6abfb0b4ae9a319c99c4875f3915 4.svg"
-            alt="img"
-          />
+        <div class="card" v-for="el in arrSort" v-else>
+          <RouterLink @click="getClickItem(el)" to="/CardItem">
+            <img
+              class="card_image"
+              src="../Main_page/main/assets/acfa6abfb0b4ae9a319c99c4875f3915 4.svg"
+              alt="img"
+            />
+          </RouterLink>
           <div class="card_title">{{ el.name }}</div>
           <div class="price">
             <div class="price_now">От {{ el.price }}р</div>

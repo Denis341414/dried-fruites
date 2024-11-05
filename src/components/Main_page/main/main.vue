@@ -63,12 +63,12 @@ function getClickItem(el) {
 function addInBasket(el) {
   store.ItemsInBasket.push(el);
   console.log(store.ItemsInBasket);
-  addedInBasket(el.id, "dont_basket");
+  // addedInBasket(el.id, "dont_basket");
 }
 
 function addedInBasket(elementID, style) {
   const element = document.getElementById(elementID);
-  element.clas;
+  element.class;
 }
 
 async function addInFavorite(element) {
