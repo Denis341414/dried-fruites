@@ -5,6 +5,7 @@ import axios from "axios";
 import Footer from "../Main_page/footer/Footer.vue";
 import Header_line from "../Main_page/header/header_line.vue";
 import Main_footer from "../Main_page/main/main_footer.vue";
+import { RouterLink } from "vue-router";
 
 const arrDriedFruits = ref([]);
 const arrSort = ref([]);
@@ -141,11 +142,13 @@ onMounted(inject("scrollTo"));
       </div>
       <div class="assortement_cards">
         <div class="card" v-if="searchResult.id > 0">
-          <img
-            class="card_image"
-            src="../Main_page/main/assets/acfa6abfb0b4ae9a319c99c4875f3915 4.svg"
-            alt="img"
-          />
+          <RouterLink @click="getClickItem(searchResult)" to="/CardItem">
+            <img
+              class="card_image"
+              src="../Main_page/main/assets/acfa6abfb0b4ae9a319c99c4875f3915 4.svg"
+              alt="img"
+            />
+          </RouterLink>
           <div class="card_title">{{ searchResult.name }}</div>
           <div class="price">
             <div class="price_now">От {{ searchResult.price }}р</div>
@@ -316,6 +319,10 @@ onMounted(inject("scrollTo"));
   margin-bottom: 4em;
   width: 20vw;
   height: max-content;
+  transition: all 0.3s ease;
+}
+.card:hover {
+  box-shadow: 1px 1px 10px rgb(93, 93, 93);
 }
 .card_image {
   width: 18vw;

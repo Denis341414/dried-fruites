@@ -44,11 +44,12 @@ onMounted(inject("scrollTo"));
         <label for="item_input">Ваш email</label>
         <input class="item_input" placeholder="E-mail@mail.ru" type="text" />
         <label for="">Способ оплаты</label>
-        <input
-          class="item_input"
-          placeholder="Наличными при получении"
-          type="text"
-        />
+        <select class="item_input" id="fruits" name="fruits">
+          <option value="Nal">Наличными при получении</option>
+          <option value="card">Картой</option>
+          <option value="SBP">СБП</option>
+          <option value="outher">Другой способ оплаты</option>
+        </select>
         <label for="item_input">Пункт Выдачи</label>
         <input
           class="item_input"
@@ -62,7 +63,10 @@ onMounted(inject("scrollTo"));
           <div class="order_items">
             <div class="item" v-for="(el, index) in ItemsInBasket">
               <div class="name">{{ el.name }}</div>
-              <div class="weight">300</div>
+              <div v-if="el.weight != undefined" class="weight">
+                {{ el.weight }}
+              </div>
+              <div v-else class="weight">300</div>
               <div class="price">{{ el.price }}р</div>
             </div>
           </div>

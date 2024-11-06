@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from "vue";
 import axios from "axios";
+import { RouterLink } from "vue-router";
 const search = ref("");
 const Item = ref();
 
@@ -13,7 +14,17 @@ async function searchItem() {
     .then((res) => {
       console.log(Item.value);
       search.value = "";
+      getClickItem(Item.value);
     });
+}
+
+function getClickItem(el) {
+  if (localStorage.getItem("ItemCard")) {
+    localStorage.removeItem("ItemCard");
+    localStorage.setItem("ItemCard", JSON.stringify(el));
+  } else {
+    localStorage.setItem("ItemCard", JSON.stringify(el));
+  }
 }
 </script>
 
@@ -34,9 +45,10 @@ async function searchItem() {
           placeholder="Кешью Австралийский"
           class="search_input"
         />
-        <button @click="searchItem" class="search_button">
+
+        <RouterLink to="/CardItem" @click="searchItem" class="search_button">
           <img src="./assets/search.svg" alt="search" />
-        </button>
+        </RouterLink>
       </div>
     </div>
     <div class="header_main_right">
@@ -97,6 +109,9 @@ async function searchItem() {
   border-radius: 30px;
   border: none;
   background: rgba(254, 179, 2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .right_image_block {
   background-color: gray;

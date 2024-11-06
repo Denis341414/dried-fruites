@@ -173,6 +173,10 @@ onMounted(getResOnBack);
   margin-bottom: 4em;
   width: 20vw;
   height: max-content;
+  transition: all 0.3s ease;
+}
+.card:hover {
+  box-shadow: 1px 1px 10px rgb(93, 93, 93);
 }
 .card_image {
   width: 18vw;
@@ -226,13 +230,16 @@ onMounted(getResOnBack);
 .in_basket {
   flex: 1;
   background-color: rgba(254, 179, 2, 1);
-  transition: all 0.3s ease;
+  transition: all 0.5s ease;
   color: #fff;
   font-weight: 700;
   font-size: 16px;
 }
 .in_basket:hover {
   background-color: rgba(254, 179, 2, 0.7);
+}
+.in_basket:active {
+  background-color: black;
 }
 
 .dont_basket {
