@@ -39,7 +39,7 @@ const store = useItemStore();
 
     <div class="header_line_right">
       <div class="number_phone">+7 999 999 99 99</div>
-      <div class="favourites">Избранное</div>
+      <RouterLink to="/Favorites" class="favourites">Избранное</RouterLink>
       <RouterLink to="/Basket" class="basket">
         Корзина
         <div class="quantity">{{ store.basket }}</div>
@@ -94,6 +94,9 @@ const store = useItemStore();
 }
 .favourites {
   font-weight: 900;
+  text-decoration: none;
+  color: black;
+  transition: all 0.3s ease;
 }
 .favourites:hover {
   color: rgb(174, 6, 6);

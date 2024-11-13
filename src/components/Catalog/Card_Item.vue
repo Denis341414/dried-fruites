@@ -12,10 +12,12 @@ import related_Products from "./related_Products.vue";
 const defaultWeight = ref(300);
 const ItemData = JSON.parse(localStorage.getItem("ItemCard"));
 const weight = ref(300);
-const price = ref(ItemData.price);
+const price = ref(ItemData[0].price);
 const relatedProducts = ref([]);
 const store = useItemStore();
 const el = ref({});
+
+console.log(ItemData[0].name);
 
 function getWeight(event) {
   weight.value = event.target.innerHTML;
@@ -25,27 +27,24 @@ function getWeight(event) {
 
 function calculatingThePrice(value) {
   price.value = 0;
-  price.value = Math.round(ItemData.price * (value / 300));
+  price.value = Math.round(ItemData[0].price * (value / 300));
   // console.log(price.value);
 }
 
 function addInBasket() {
-  el.value["name"] = ItemData.name;
+  el.value["name"] = ItemData[0].name;
   el.value["price"] = price.value;
   el.value["weight"] = weight.value;
-  el.value["categories"] = ItemData.categories;
-  el.value["active"] = !ItemData.active;
-  el.value["id"] = ItemData.id;
+  el.value["categories"] = ItemData[0].categories;
+  el.value["active"] = !ItemData[0].active;
+  el.value["id"] = ItemData[0].id;
   el.value["active"] = !el["active"];
   store.ItemsInBasket.push(el.value);
 }
-
-console.log(ItemData.categories);
-
 onMounted(async () => {
   await axios
     .get(
-      `https://7425c7118c450585.mokky.dev/fruites?categories=*${ItemData.categories[0]}`
+      `https://7425c7118c450585.mokky.dev/fruites?categories=*${ItemData[0].categories[0]}`
     )
     .then((res) => {
       for (let i = 0; i < res.length || i < 4; i++) {
@@ -62,7 +61,7 @@ onMounted(inject("scrollTo"));
 <template>
   <HeaderLine />
   <RouterLink to="/" class="back_to_catalog">Вернуться в каталог</RouterLink>
-  <h1 class="title">{{ ItemData.name }}</h1>
+  <h1 class="title">{{ ItemData[0].name }}</h1>
   <div class="card_container">
     <div class="card_left">
       <img

@@ -1,20 +1,26 @@
 <script setup>
 import { ref } from "vue";
 import axios from "axios";
-import { RouterLink } from "vue-router";
+import { RouterLink, useRouter } from "vue-router";
 const search = ref("");
 const Item = ref();
+const router = useRouter();
+const errorSearch = "Нет такого товара";
 
 async function searchItem() {
   await axios
     .get(`https://7425c7118c450585.mokky.dev/fruites?name=${search.value}`)
     .then((res) => {
-      Item.value = res;
-    })
-    .then((res) => {
-      console.log(Item.value);
-      search.value = "";
-      getClickItem(Item.value);
+      // console.log(res.data);
+      if (res.data.length != 0) {
+        Item.value = res.data;
+        getClickItem(Item.value);
+        console.log(Item.value);
+        search.value = "";
+        router.push("/CardItem");
+      } else {
+        alert(errorSearch);
+      }
     });
 }
 
@@ -46,9 +52,9 @@ function getClickItem(el) {
           class="search_input"
         />
 
-        <RouterLink to="/CardItem" @click="searchItem" class="search_button">
+        <a @click="searchItem" class="search_button">
           <img src="./assets/search.svg" alt="search" />
-        </RouterLink>
+        </a>
       </div>
     </div>
     <div class="header_main_right">

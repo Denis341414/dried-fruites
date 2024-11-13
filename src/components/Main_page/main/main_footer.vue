@@ -42,7 +42,7 @@ const store = useItemStore();
 
     <div class="header_line_right">
       <div class="favourites">Избранное</div>
-      <div class="basket">Корзина</div>
+      <RouterLink to="/Basket" class="basket">Корзина</RouterLink>
     </div>
   </div>
 </template>
@@ -106,6 +106,8 @@ const store = useItemStore();
   width: 150px;
   height: 50px;
   border-radius: 20px;
+  text-decoration: none;
+  color: black;
 }
 .quantity {
   display: flex;

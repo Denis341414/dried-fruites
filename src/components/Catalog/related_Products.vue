@@ -12,7 +12,7 @@ const router = useRouter();
 onMounted(async () => {
   await axios
     .get(
-      `https://7425c7118c450585.mokky.dev/fruites?categories=*${ItemData.categories[0]}`
+      `https://7425c7118c450585.mokky.dev/fruites?categories=*${ItemData[0].categories[0]}`
     )
     .then((res) => {
       for (let i = 0; i < res.length || i < 4; i++) {
