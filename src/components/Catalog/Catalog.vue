@@ -1,46 +1,28 @@
 <script setup>
 import { ref, onMounted, watch, inject } from "vue";
 import axios from "axios";
-
+import { searchFruit } from "./model/searchFruitInArr";
 import Footer from "../Main_page/footer/Footer.vue";
 import Header_line from "../Main_page/header/header_line.vue";
 import Main_footer from "../Main_page/main/main_footer.vue";
+import { RouterLink } from "vue-router";
+import { APIClient } from "../../api/ApiClient";
+import { Keys } from "./keys/CatalogKeys";
 
 const arrDriedFruits = ref([]);
 const arrSort = ref([]);
 const categories = ref("");
-const startPage = ref(0);
 const pages = ref();
-const maxItemInPage = 6;
-const pageNow = ref("");
 const search = ref("");
 const searchResult = ref({});
-const arrCategories = [
-  "Сухофрукты экзотические",
-  "Ягоды сушеные",
-  "Цукаты",
-  "Восточные сладости",
-  "Снеки",
-  "Семена и бобовые",
-  "Бакалея",
-  "Цукаты",
-  "Восточные сладости",
-  "Снеки",
-  "Семена и бобовые",
-  "Бакалея",
-];
 
-async function getFruites() {
-  try {
-    await axios
-      .get("https://7425c7118c450585.mokky.dev/fruites")
-      .then((res) => {
-        arrDriedFruits.value = res.data;
-      });
-  } catch (error) {
-    console.log(error);
-  }
-}
+const useSearchFruit = () => {
+  searchFruit(searchResult, arrDriedFruits, search);
+};
+
+onMounted(async () => {
+  arrDriedFruits.value = await APIClient.getRes();
+});
 
 async function addInFavorite(element) {
   try {
@@ -55,16 +37,6 @@ async function addInFavorite(element) {
   } catch (error) {
     console.log(error);
   }
-}
-
-function searchFruit() {
-  searchResult.value = "";
-  arrDriedFruits.value.forEach((element) => {
-    if (element["name"].toLowerCase() == search.value.toLowerCase()) {
-      searchResult.value = element;
-    }
-  });
-  console.log(searchResult.value);
 }
 
 function getCategories(event) {
@@ -93,7 +65,6 @@ function getClickItem(el) {
   }
 }
 
-onMounted(getFruites);
 watch(categories, Sorted);
 onMounted(inject("scrollTo"));
 </script>
@@ -107,7 +78,7 @@ onMounted(inject("scrollTo"));
       <div class="Categories_items">
         <li
           class="item_cat"
-          v-for="(el, index) in arrCategories"
+          v-for="(el, index) in Keys.arrCategories"
           :key="index"
           @click="getCategories"
         >
@@ -133,7 +104,10 @@ onMounted(inject("scrollTo"));
               placeholder="Кешью Австралийский"
               class="search_input"
             />
-            <button @click="searchFruit" class="search_button">
+            <button
+              @click="useSearchFruit(searchResult, arrDriedFruits, search)"
+              class="search_button"
+            >
               <img src="../Main_page/header/assets/search.svg" alt="search" />
             </button>
           </div>
@@ -141,11 +115,13 @@ onMounted(inject("scrollTo"));
       </div>
       <div class="assortement_cards">
         <div class="card" v-if="searchResult.id > 0">
-          <img
-            class="card_image"
-            src="../Main_page/main/assets/acfa6abfb0b4ae9a319c99c4875f3915 4.svg"
-            alt="img"
-          />
+          <RouterLink @click="getClickItem(searchResult)" to="/CardItem">
+            <img
+              class="card_image"
+              src="../Main_page/main/assets/acfa6abfb0b4ae9a319c99c4875f3915 4.svg"
+              alt="img"
+            />
+          </RouterLink>
           <div class="card_title">{{ searchResult.name }}</div>
           <div class="price">
             <div class="price_now">От {{ searchResult.price }}р</div>
@@ -316,6 +292,10 @@ onMounted(inject("scrollTo"));
   margin-bottom: 4em;
   width: 20vw;
   height: max-content;
+  transition: all 0.3s ease;
+}
+.card:hover {
+  box-shadow: 1px 1px 10px rgb(93, 93, 93);
 }
 .card_image {
   width: 18vw;

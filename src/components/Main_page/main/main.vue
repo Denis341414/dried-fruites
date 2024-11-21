@@ -1,8 +1,11 @@
 <script setup>
 import Main_footer from "./main_footer.vue";
 import { useItemStore } from "../../../stores/item";
+import { APIClient } from "../../../api/ApiClient";
+import { getClickItem } from "./model/getClickItem";
+import { addInBasket } from "./model/addInBasket";
 
-import axios, { Axios } from "axios";
+import axios from "axios";
 import { onMounted, ref } from "vue";
 
 const store = useItemStore();
@@ -22,6 +25,9 @@ const masButton = [
   "Семена и бобовые",
   "Бакалея",
 ];
+onMounted(async () => {
+  fruitesMassiv.value = await APIClient.getRes();
+});
 
 onMounted(() => {
   arrFavorite.value = [];
@@ -30,46 +36,6 @@ onMounted(() => {
   }
   console.log(arrFavorite.value);
 });
-
-async function getResOnBack() {
-  try {
-    await axios
-      .get("https://7425c7118c450585.mokky.dev/fruites")
-      .then((res) => {
-        fruitesMassiv.value = res.data;
-        // console.log(res)
-      });
-  } catch (err) {
-    console.error(err);
-  }
-}
-
-function getParamItem(el) {
-  titleItem.value = el.name;
-  priceItem.value = el.price;
-  categoryItem.value = el.categories;
-  console.log(titleItem.value, priceItem.value);
-}
-
-function getClickItem(el) {
-  if (localStorage.getItem("ItemCard")) {
-    localStorage.removeItem("ItemCard");
-    localStorage.setItem("ItemCard", JSON.stringify(el));
-  } else {
-    localStorage.setItem("ItemCard", JSON.stringify(el));
-  }
-}
-
-function addInBasket(el) {
-  store.ItemsInBasket.push(el);
-  console.log(store.ItemsInBasket);
-  // addedInBasket(el.id, "dont_basket");
-}
-
-function addedInBasket(elementID, style) {
-  const element = document.getElementById(elementID);
-  element.class;
-}
 
 async function addInFavorite(element) {
   try {
@@ -85,8 +51,6 @@ async function addInFavorite(element) {
     console.log(error);
   }
 }
-
-onMounted(getResOnBack);
 </script>
 
 <template>
@@ -117,7 +81,9 @@ onMounted(getResOnBack);
             :class="el.active ? 'favorite-like' : 'favorite-desable'"
             @click="addInFavorite(el)"
           ></button>
-          <button class="in_basket" @click="addInBasket(el)">В корзину</button>
+          <button class="in_basket" @click="addInBasket(el, store)">
+            В корзину
+          </button>
         </div>
       </div>
     </div>
@@ -173,6 +139,10 @@ onMounted(getResOnBack);
   margin-bottom: 4em;
   width: 20vw;
   height: max-content;
+  transition: all 0.3s ease;
+}
+.card:hover {
+  box-shadow: 1px 1px 10px rgb(93, 93, 93);
 }
 .card_image {
   width: 18vw;
@@ -226,13 +196,16 @@ onMounted(getResOnBack);
 .in_basket {
   flex: 1;
   background-color: rgba(254, 179, 2, 1);
-  transition: all 0.3s ease;
+  transition: all 0.5s ease;
   color: #fff;
   font-weight: 700;
   font-size: 16px;
 }
 .in_basket:hover {
   background-color: rgba(254, 179, 2, 0.7);
+}
+.in_basket:active {
+  background-color: black;
 }
 
 .dont_basket {

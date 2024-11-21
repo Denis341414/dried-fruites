@@ -1,20 +1,13 @@
 <script setup>
 import { ref } from "vue";
 import axios from "axios";
+import { useRouter } from "vue-router";
+import { APIClient } from "../../../api/ApiClient";
+import { searchItem } from "./model/searchItemHook";
 const search = ref("");
 const Item = ref();
-
-async function searchItem() {
-  await axios
-    .get(`https://7425c7118c450585.mokky.dev/fruites?name=${search.value}`)
-    .then((res) => {
-      Item.value = res;
-    })
-    .then((res) => {
-      console.log(Item.value);
-      search.value = "";
-    });
-}
+const router = useRouter();
+const errorSearch = "Нет такого товара";
 </script>
 
 <template>
@@ -34,9 +27,10 @@ async function searchItem() {
           placeholder="Кешью Австралийский"
           class="search_input"
         />
-        <button @click="searchItem" class="search_button">
+
+        <span @click="searchItem(Item, search, router)" class="search_button">
           <img src="./assets/search.svg" alt="search" />
-        </button>
+        </span>
       </div>
     </div>
     <div class="header_main_right">
@@ -97,6 +91,9 @@ async function searchItem() {
   border-radius: 30px;
   border: none;
   background: rgba(254, 179, 2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .right_image_block {
   background-color: gray;

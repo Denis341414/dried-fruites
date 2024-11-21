@@ -1,18 +1,24 @@
 <script setup>
-import { onMounted, ref, inject } from "vue";
+import { onMounted, ref, inject, reactive } from "vue";
 import axios from "axios";
+import { RouterLink } from "vue-router";
+import { localStorageKeys } from "../../localStorageKeys";
+import { useItemStore } from "../../stores/item";
 
 import Footer from "../Main_page/footer/Footer.vue";
 import HeaderLine from "../Main_page/header/header_line.vue";
 import MainFooter from "../Main_page/main/main_footer.vue";
 import related_Products from "./related_Products.vue";
-import { RouterLink } from "vue-router";
 
 const defaultWeight = ref(300);
-const ItemData = JSON.parse(localStorage.getItem("ItemCard"));
+const ItemData = JSON.parse(localStorage.getItem(localStorageKeys.ITEM_CARD));
 const weight = ref(300);
 const price = ref(ItemData.price);
 const relatedProducts = ref([]);
+const store = useItemStore();
+const el = ref({});
+
+console.log(ItemData.name);
 
 function getWeight(event) {
   weight.value = event.target.innerHTML;
@@ -26,8 +32,16 @@ function calculatingThePrice(value) {
   // console.log(price.value);
 }
 
-console.log(ItemData.categories);
-
+function addInBasket() {
+  el.value["name"] = ItemData.name;
+  el.value["price"] = price.value;
+  el.value["weight"] = weight.value;
+  el.value["categories"] = ItemData.categories;
+  el.value["active"] = !ItemData.active;
+  el.value["id"] = ItemData.id;
+  el.value["active"] = !el["active"];
+  store.ItemsInBasket.push(el.value);
+}
 onMounted(async () => {
   await axios
     .get(
@@ -47,7 +61,7 @@ onMounted(inject("scrollTo"));
 
 <template>
   <HeaderLine />
-  <RouterLink to="/" class="back_to_catalog">Вернуться в каталог</RouterLink>
+  <RouterLink to="/" class="back_to_catalog">На главную</RouterLink>
   <h1 class="title">{{ ItemData.name }}</h1>
   <div class="card_container">
     <div class="card_left">
@@ -97,7 +111,10 @@ onMounted(inject("scrollTo"));
         Placeat!
       </div>
       <div class="price">{{ price }}.00р</div>
-      <button class="in_basket">В корзину</button>
+      <button v-if="!el['active']" @click="addInBasket" class="in_basket">
+        В корзину
+      </button>
+      <button v-else @click="addInBasket" class="tr_basket">В корзине</button>
     </div>
   </div>
   <related_Products />
@@ -174,6 +191,15 @@ onMounted(inject("scrollTo"));
     }
     .in_basket {
       background-color: rgba(254, 179, 2, 1);
+      border: none;
+      font-size: 24px;
+      color: #fff;
+      width: 10em;
+      height: 2em;
+      border-radius: 0.5em;
+    }
+    .tr_basket {
+      background-color: rgb(39, 39, 39);
       border: none;
       font-size: 24px;
       color: #fff;

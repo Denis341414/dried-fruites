@@ -1,13 +1,11 @@
 <script setup>
-import headerLine from './header_line.vue';
-import headerMain from './header_main.vue'
+import headerLine from "./header_line.vue";
+import headerMain from "./header_main.vue";
 </script>
 
 <template>
-    <headerLine/>
-    <headerMain/>
+  <headerLine />
+  <headerMain />
 </template>
 
-<style scoped>
-    
-</style>
+<style scoped></style>
