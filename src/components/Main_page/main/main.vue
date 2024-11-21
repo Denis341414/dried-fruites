@@ -34,7 +34,7 @@ onMounted(() => {
   for (let key in localStorage.key) {
     arrFavorite.value.push(localStorage.getItem(key));
   }
-  console.log(arrFavorite.value);
+  // console.log(arrFavorite.value);
 });
 
 async function addInFavorite(element) {

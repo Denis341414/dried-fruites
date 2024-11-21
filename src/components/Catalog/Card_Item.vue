@@ -13,7 +13,7 @@ import related_Products from "./related_Products.vue";
 const defaultWeight = ref(300);
 const ItemData = JSON.parse(localStorage.getItem(localStorageKeys.ITEM_CARD));
 const weight = ref(300);
-const price = ref(ItemData.price);
+const price = ref(ItemData[0].price);
 const relatedProducts = ref([]);
 const store = useItemStore();
 const el = ref({});
@@ -28,7 +28,7 @@ function getWeight(event) {
 
 function calculatingThePrice(value) {
   price.value = 0;
-  price.value = Math.round(ItemData.price * (value / 300));
+  price.value = Math.round(ItemData[0].price * (value / 300));
   // console.log(price.value);
 }
 
@@ -45,7 +45,7 @@ function addInBasket() {
 onMounted(async () => {
   await axios
     .get(
-      `https://7425c7118c450585.mokky.dev/fruites?categories=*${ItemData.categories[0]}`
+      `https://7425c7118c450585.mokky.dev/fruites?categories=*${ItemData[0].categories[0]}`
     )
     .then((res) => {
       for (let i = 0; i < res.length || i < 4; i++) {
