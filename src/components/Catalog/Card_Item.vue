@@ -1,36 +1,24 @@
 <script setup>
-import { onMounted, ref, inject, reactive } from "vue";
+import { onMounted, ref, inject } from "vue";
 import axios from "axios";
 import { RouterLink } from "vue-router";
 import { localStorageKeys } from "../../localStorageKeys";
 import { useItemStore } from "../../stores/item";
+import { getWeight } from "./model/getWeight";
+import { Keys } from "./keys/CatalogKeys";
+import { calculatingThePrice } from "./model/calculatingThePrice";
+import { useCatalogStore } from "./stores/CatalogStore";
 
 import Footer from "../Main_page/footer/Footer.vue";
 import HeaderLine from "../Main_page/header/header_line.vue";
 import MainFooter from "../Main_page/main/main_footer.vue";
 import related_Products from "./related_Products.vue";
 
-const defaultWeight = ref(300);
 const ItemData = JSON.parse(localStorage.getItem(localStorageKeys.ITEM_CARD));
-const weight = ref(300);
-const price = ref(ItemData[0].price);
 const relatedProducts = ref([]);
 const store = useItemStore();
+const catalogStore = useCatalogStore();
 const el = ref({});
-
-console.log(ItemData.name);
-
-function getWeight(event) {
-  weight.value = event.target.innerHTML;
-  // console.log(weight.value);
-  calculatingThePrice(Number(weight.value));
-}
-
-function calculatingThePrice(value) {
-  price.value = 0;
-  price.value = Math.round(ItemData[0].price * (value / 300));
-  // console.log(price.value);
-}
 
 function addInBasket() {
   el.value["name"] = ItemData.name;
@@ -45,7 +33,7 @@ function addInBasket() {
 onMounted(async () => {
   await axios
     .get(
-      `https://7425c7118c450585.mokky.dev/fruites?categories=*${ItemData[0].categories[0]}`
+      `https://7425c7118c450585.mokky.dev/fruites?categories=*${ItemData.categories[0]}`
     )
     .then((res) => {
       for (let i = 0; i < res.length || i < 4; i++) {
@@ -72,9 +60,12 @@ onMounted(inject("scrollTo"));
       />
       <div class="card_weight">
         <button
-          @click="getWeight"
+          @click="
+            getWeight($event.target.textContent);
+            calculatingThePrice(ItemData, catalogStore.weight);
+          "
           :class="
-            weight == 300
+            catalogStore.weight == 300
               ? 'weight_btn btn_300 weight_btn_active'
               : 'weight_btn btn_300'
           "
@@ -82,9 +73,12 @@ onMounted(inject("scrollTo"));
           300
         </button>
         <button
-          @click="getWeight"
+          @click="
+            getWeight($event.target.textContent);
+            calculatingThePrice(ItemData, catalogStore.weight);
+          "
           :class="
-            weight == 500
+            catalogStore.weight == 500
               ? 'weight_btn btn_500 weight_btn_active'
               : 'weight_btn btn_500'
           "
@@ -92,9 +86,12 @@ onMounted(inject("scrollTo"));
           500
         </button>
         <button
-          @click="getWeight"
+          @click="
+            getWeight($event.target.textContent);
+            calculatingThePrice(ItemData, catalogStore.weight);
+          "
           :class="
-            weight == 1000
+            catalogStore.weight == 1000
               ? 'weight_btn btn_1000 weight_btn_active'
               : 'weight_btn btn_1000'
           "
@@ -110,7 +107,7 @@ onMounted(inject("scrollTo"));
         voluptas suscipit repudiandae adipisci rerum, quidem commodi et hic!
         Placeat!
       </div>
-      <div class="price">{{ price }}.00р</div>
+      <div class="price">{{ catalogStore.price }}.00р</div>
       <button v-if="!el['active']" @click="addInBasket" class="in_basket">
         В корзину
       </button>
