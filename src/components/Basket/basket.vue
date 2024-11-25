@@ -61,7 +61,7 @@ onMounted(inject("scrollTo"));
         <div class="result_order">
           <h3 class="result_order_title">Ваш заказ</h3>
           <div class="order_items">
-            <div class="item" v-for="(el, index) in ItemsInBasket">
+            <div class="item" v-for="(el, index) in ItemsInBasket" :key="index">
               <div class="name">{{ el.name }}</div>
               <div v-if="el.weight != undefined" class="weight">
                 {{ el.weight }}

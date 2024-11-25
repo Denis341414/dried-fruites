@@ -1,16 +1,14 @@
-import {defineStore} from 'pinia'
-import { computed, ref } from 'vue'
+import { defineStore } from "pinia";
+import { computed, ref } from "vue";
 
-export const useItemStore = defineStore('ItemsStore', () => {
-  const ItemsInBasket = ref([])
+export const useItemStore = defineStore("ItemsStore", () => {
+  const ItemsInBasket = ref([]);
   const basket = computed(() => {
-    return ItemsInBasket.value.length
-  })
-
-  
+    return ItemsInBasket.value.length;
+  });
 
   return {
     basket,
-    ItemsInBasket
-  }
-})
+    ItemsInBasket,
+  };
+});

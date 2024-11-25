@@ -4,53 +4,32 @@ import axios from "axios";
 import { RouterLink } from "vue-router";
 import { localStorageKeys } from "../../localStorageKeys";
 import { useItemStore } from "../../stores/item";
-import { getWeight } from "./model/getWeight";
-import { Keys } from "./keys/CatalogKeys";
-import { calculatingThePrice } from "./model/calculatingThePrice";
+import { getWeight } from "./modelItemCard/getWeight";
+import { calculatingThePrice } from "./modelItemCard/calculatingThePrice";
 import { useCatalogStore } from "./stores/CatalogStore";
+import { addInBasket } from "./modelItemCard/addInBasket";
+import { getRelatedProducts } from "./api/getRelatedProducts";
 
 import Footer from "../Main_page/footer/Footer.vue";
 import HeaderLine from "../Main_page/header/header_line.vue";
 import MainFooter from "../Main_page/main/main_footer.vue";
 import related_Products from "./related_Products.vue";
 
-const ItemData = JSON.parse(localStorage.getItem(localStorageKeys.ITEM_CARD));
-const relatedProducts = ref([]);
-const store = useItemStore();
 const catalogStore = useCatalogStore();
-const el = ref({});
 
-function addInBasket() {
-  el.value["name"] = ItemData.name;
-  el.value["price"] = price.value;
-  el.value["weight"] = weight.value;
-  el.value["categories"] = ItemData.categories;
-  el.value["active"] = !ItemData.active;
-  el.value["id"] = ItemData.id;
-  el.value["active"] = !el["active"];
-  store.ItemsInBasket.push(el.value);
-}
 onMounted(async () => {
-  await axios
-    .get(
-      `https://7425c7118c450585.mokky.dev/fruites?categories=*${ItemData.categories[0]}`
-    )
-    .then((res) => {
-      for (let i = 0; i < res.length || i < 4; i++) {
-        relatedProducts.value.push(res.data[i]);
-      }
-      console.log(relatedProducts.value);
-    })
-    .catch((err) => console.log(err));
+  getRelatedProducts(
+    catalogStore.itemData.categories[0],
+    catalogStore.relatedProducts
+  );
 });
-
 onMounted(inject("scrollTo"));
 </script>
 
 <template>
   <HeaderLine />
   <RouterLink to="/" class="back_to_catalog">На главную</RouterLink>
-  <h1 class="title">{{ ItemData.name }}</h1>
+  <h1 class="title">{{ catalogStore.itemData.name }}</h1>
   <div class="card_container">
     <div class="card_left">
       <img
@@ -62,7 +41,7 @@ onMounted(inject("scrollTo"));
         <button
           @click="
             getWeight($event.target.textContent);
-            calculatingThePrice(ItemData, catalogStore.weight);
+            calculatingThePrice(catalogStore.itemData, catalogStore.weight);
           "
           :class="
             catalogStore.weight == 300
@@ -75,7 +54,7 @@ onMounted(inject("scrollTo"));
         <button
           @click="
             getWeight($event.target.textContent);
-            calculatingThePrice(ItemData, catalogStore.weight);
+            calculatingThePrice(catalogStore.itemData, catalogStore.weight);
           "
           :class="
             catalogStore.weight == 500
@@ -88,7 +67,7 @@ onMounted(inject("scrollTo"));
         <button
           @click="
             getWeight($event.target.textContent);
-            calculatingThePrice(ItemData, catalogStore.weight);
+            calculatingThePrice(catalogStore.itemData, catalogStore.weight);
           "
           :class="
             catalogStore.weight == 1000
@@ -108,10 +87,26 @@ onMounted(inject("scrollTo"));
         Placeat!
       </div>
       <div class="price">{{ catalogStore.price }}.00р</div>
-      <button v-if="!el['active']" @click="addInBasket" class="in_basket">
+      <button
+        v-if="!useCatalogStore.flagAdded"
+        @click="addInBasket"
+        class="in_basket"
+      >
         В корзину
       </button>
-      <button v-else @click="addInBasket" class="tr_basket">В корзине</button>
+      <button
+        v-else
+        @click="
+          addInBasket(
+            catalogStore.itemData,
+            catalogStore.price,
+            catalogStore.weight
+          )
+        "
+        class="tr_basket"
+      >
+        В корзине
+      </button>
     </div>
   </div>
   <related_Products />

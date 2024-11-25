@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted, watch, inject } from "vue";
 import axios from "axios";
-import { searchFruit } from "./model/searchFruitInArr";
+import { searchFruit } from "./modelItemCard/searchFruitInArr";
 import Footer from "../Main_page/footer/Footer.vue";
 import Header_line from "../Main_page/header/header_line.vue";
 import Main_footer from "../Main_page/main/main_footer.vue";
