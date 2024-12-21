@@ -3,33 +3,34 @@ import { onMounted, ref } from "vue";
 import axios from "axios";
 import { RouterLink, useRouter } from "vue-router";
 import { useItemStore } from "../../stores/item";
+import { useCatalogStore } from "./stores/CatalogStore";
+import { useItemCardStore } from "./stores/ItemCardStore";
+import { getClickItem } from "../Main_page/main/model/getClickItem";
+import { addInBasket } from "../Main_page/main/model/addInBasket";
 
-const ItemData = JSON.parse(localStorage.getItem("ItemCard"));
-const relatedProducts = ref([]);
+const catalogStore = useCatalogStore();
 const store = useItemStore();
+const ItemCardStore = useItemCardStore();
 const router = useRouter();
 
 onMounted(async () => {
   await axios
     .get(
-      `https://7425c7118c450585.mokky.dev/fruites?categories=*${ItemData.categories[0]}`
+      `https://7425c7118c450585.mokky.dev/fruites?categories=*${catalogStore.categories}`
     )
     .then((res) => {
-      for (let i = 0; i < res.length || i < 4; i++) {
-        relatedProducts.value.push(res.data[i]);
+      ItemCardStore.relatedProducts = [];
+      for (let i = 0; i < 4; i++) {
+        console.log(res.data[i]);
+        ItemCardStore.relatedProducts.push(res.data[i]);
       }
-      console.log(relatedProducts.value);
+      console.log(ItemCardStore.relatedProducts, catalogStore.categories);
     })
     .catch((err) => console.log(err));
 });
 
-function getClickItem(el) {
-  if (localStorage.getItem("ItemCard")) {
-    localStorage.removeItem("ItemCard");
-    localStorage.setItem("ItemCard", JSON.stringify(el));
-  } else {
-    localStorage.setItem("ItemCard", JSON.stringify(el));
-  }
+function getClickItemHook(el) {
+  getClickItem(el);
 
   router.push("/CardItem");
   window.scrollTo(0, 0);
@@ -39,18 +40,18 @@ function getClickItem(el) {
     router.go(0);
   }, 1);
 }
-
-function addInBasket(el) {
-  store.ItemsInBasket.push(el);
-}
 </script>
 
 <template>
   <div class="related_products">
     <div class="related_products_title">Сопутствующие товары</div>
     <div class="cont_related_cards">
-      <div class="card" v-for="(el, index) in relatedProducts" :key="index">
-        <RouterLink to="/CardItem" @click="getClickItem(el)">
+      <div
+        class="card"
+        v-for="(el, index) in ItemCardStore.relatedProducts"
+        :key="index"
+      >
+        <RouterLink to="/CardItem" @click="getClickItemHook(el)">
           <img
             class="card_image"
             src="../Main_page/main/assets/acfa6abfb0b4ae9a319c99c4875f3915 4.svg"
@@ -66,7 +67,9 @@ function addInBasket(el) {
           <button class="switcher"></button>
           <button class="searching"></button>
           <button></button>
-          <button class="in_basket" @click="addInBasket(el)">В корзину</button>
+          <button class="in_basket" @click="addInBasket(el, store)">
+            В корзину
+          </button>
         </div>
       </div>
     </div>

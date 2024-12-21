@@ -4,63 +4,23 @@ import { useItemStore } from "../../../stores/item";
 import { APIClient } from "../../../api/ApiClient";
 import { getClickItem } from "./model/getClickItem";
 import { addInBasket } from "./model/addInBasket";
-
+import { addInFavorite } from "./api/addInFavorite";
 import axios from "axios";
 import { onMounted, ref } from "vue";
+import { keysMain } from "./keys/keysMain";
+import { useStoreMain } from "./store/storeMain";
+import MainNuv from "./ui/mainNuv.vue";
 
 const store = useItemStore();
-
-const fruitesMassiv = ref([]);
-const activeButton = ref(null);
-const titleItem = ref("");
-const priceItem = ref("");
-const categoryItem = ref("");
-const arrFavorite = ref([]);
-const masButton = [
-  "Сухофрукты экзотические",
-  "Ягоды сушеные",
-  "Цукаты",
-  "Восточные сладости",
-  "Снеки",
-  "Семена и бобовые",
-  "Бакалея",
-];
-onMounted(async () => {
-  fruitesMassiv.value = await APIClient.getRes();
-});
-
-onMounted(() => {
-  arrFavorite.value = [];
-  for (let key in localStorage.key) {
-    arrFavorite.value.push(localStorage.getItem(key));
-  }
-  // console.log(arrFavorite.value);
-});
-
-async function addInFavorite(element) {
-  try {
-    element.active = !element.active;
-    if (element.active == true) {
-      localStorage.setItem(element["name"], JSON.stringify(element));
-      await axios.post(
-        "https://7425c7118c450585.mokky.dev/favorites",
-        JSON.parse(localStorage.getItem(element["name"]))
-      );
-    }
-  } catch (error) {
-    console.log(error);
-  }
-}
+const storeMain = useStoreMain();
 </script>
 
 <template>
   <div class="main">
     <h1 class="main_title">Наш ассортимент</h1>
-    <div class="main_nav">
-      <button v-for="(element, index) in masButton" :key="index"></button>
-    </div>
+    <MainNuv></MainNuv>
     <div class="main_cards_container">
-      <div class="card" v-for="el in fruitesMassiv" :key="el.id">
+      <div class="card" v-for="el in storeMain.fruitesMassiv" :key="el.id">
         <RouterLink @click="getClickItem(el)" to="/CardItem">
           <img
             class="card_image"
@@ -69,7 +29,6 @@ async function addInFavorite(element) {
           />
         </RouterLink>
         <div class="card_title">{{ el.name }}</div>
-        <!-- <div class="card_subtext">{{ el. }} </div> -->
         <div class="price">
           <div class="price_now">От {{ el.price }}р</div>
           <div class="price_before">От {{ Number(el.price) + 50 }}р</div>
@@ -101,27 +60,6 @@ async function addInFavorite(element) {
 .main_title {
   margin-bottom: 1em;
   font-size: 72px;
-}
-.main_nav {
-  display: flex;
-  gap: 3em;
-}
-.main_nav_item {
-  list-style: none;
-  font-size: 18px;
-  border: none;
-  background: green;
-  padding: 13px;
-  border-radius: 15px;
-}
-.main_nav_item_active {
-  list-style: none;
-  font-size: 18px;
-  border: none;
-  background: rgba(254, 179, 2, 1);
-  border-radius: 15px;
-  color: #fff;
-  padding: 13px;
 }
 .main_cards_container {
   display: grid;

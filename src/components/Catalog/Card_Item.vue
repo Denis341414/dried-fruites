@@ -1,12 +1,9 @@
 <script setup>
-import { onMounted, ref, inject } from "vue";
-import axios from "axios";
+import { onMounted, inject } from "vue";
 import { RouterLink } from "vue-router";
-import { localStorageKeys } from "../../localStorageKeys";
-import { useItemStore } from "../../stores/item";
 import { getWeight } from "./modelItemCard/getWeight";
 import { calculatingThePrice } from "./modelItemCard/calculatingThePrice";
-import { useCatalogStore } from "./stores/CatalogStore";
+import { useItemCardStore } from "./stores/ItemCardStore";
 import { addInBasket } from "./modelItemCard/addInBasket";
 import { getRelatedProducts } from "./api/getRelatedProducts";
 
@@ -14,13 +11,14 @@ import Footer from "../Main_page/footer/Footer.vue";
 import HeaderLine from "../Main_page/header/header_line.vue";
 import MainFooter from "../Main_page/main/main_footer.vue";
 import related_Products from "./related_Products.vue";
+import ButtonWeight from "./ui/ButtonWeight.vue";
 
-const catalogStore = useCatalogStore();
+const ItemCardStore = useItemCardStore();
 
 onMounted(async () => {
   getRelatedProducts(
-    catalogStore.itemData.categories[0],
-    catalogStore.relatedProducts
+    ItemCardStore.itemData.categories[0],
+    ItemCardStore.relatedProducts
   );
 });
 onMounted(inject("scrollTo"));
@@ -29,7 +27,7 @@ onMounted(inject("scrollTo"));
 <template>
   <HeaderLine />
   <RouterLink to="/" class="back_to_catalog">На главную</RouterLink>
-  <h1 class="title">{{ catalogStore.itemData.name }}</h1>
+  <h1 class="title">{{ ItemCardStore.itemData.name }}</h1>
   <div class="card_container">
     <div class="card_left">
       <img
@@ -38,45 +36,9 @@ onMounted(inject("scrollTo"));
         alt=""
       />
       <div class="card_weight">
-        <button
-          @click="
-            getWeight($event.target.textContent);
-            calculatingThePrice(catalogStore.itemData, catalogStore.weight);
-          "
-          :class="
-            catalogStore.weight == 300
-              ? 'weight_btn btn_300 weight_btn_active'
-              : 'weight_btn btn_300'
-          "
-        >
-          300
-        </button>
-        <button
-          @click="
-            getWeight($event.target.textContent);
-            calculatingThePrice(catalogStore.itemData, catalogStore.weight);
-          "
-          :class="
-            catalogStore.weight == 500
-              ? 'weight_btn btn_500 weight_btn_active'
-              : 'weight_btn btn_500'
-          "
-        >
-          500
-        </button>
-        <button
-          @click="
-            getWeight($event.target.textContent);
-            calculatingThePrice(catalogStore.itemData, catalogStore.weight);
-          "
-          :class="
-            catalogStore.weight == 1000
-              ? 'weight_btn btn_1000 weight_btn_active'
-              : 'weight_btn btn_1000'
-          "
-        >
-          1000
-        </button>
+        <ButtonWeight :weight="300" />
+        <ButtonWeight :weight="500" />
+        <ButtonWeight :weight="1000" />
       </div>
     </div>
     <div class="card_right">
@@ -86,9 +48,9 @@ onMounted(inject("scrollTo"));
         voluptas suscipit repudiandae adipisci rerum, quidem commodi et hic!
         Placeat!
       </div>
-      <div class="price">{{ catalogStore.price }}.00р</div>
+      <div class="price">{{ ItemCardStore.price }}.00р</div>
       <button
-        v-if="!useCatalogStore.flagAdded"
+        v-if="!useItemCardStore.flagAdded"
         @click="addInBasket"
         class="in_basket"
       >

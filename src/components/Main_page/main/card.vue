@@ -1,5 +1,8 @@
 <script setup>
 import { useItemStore } from "../../../stores/item";
+import { getClickItem } from "./utils/getClickItem";
+import { addInBasket } from "./utils/addInBasket";
+import { addInFavorite } from "./api/addInFavorite";
 
 defineProps({
   fruitesMassiv: {
@@ -9,36 +12,6 @@ defineProps({
 });
 
 const store = useItemStore();
-
-function getClickItem(el) {
-  if (localStorage.getItem("ItemCard")) {
-    localStorage.removeItem("ItemCard");
-    localStorage.setItem("ItemCard", JSON.stringify(el));
-  } else {
-    localStorage.setItem("ItemCard", JSON.stringify(el));
-  }
-}
-
-function addInBasket(el) {
-  store.ItemsInBasket.push(el);
-  console.log(store.ItemsInBasket);
-  // addedInBasket(el.id, "dont_basket");
-}
-
-async function addInFavorite(element) {
-  try {
-    element.active = !element.active;
-    if (element.active == true) {
-      localStorage.setItem(element["name"], JSON.stringify(element));
-      await axios.post(
-        "https://7425c7118c450585.mokky.dev/favorites",
-        JSON.parse(localStorage.getItem(element["name"]))
-      );
-    }
-  } catch (error) {
-    console.log(error);
-  }
-}
 </script>
 
 <template>
@@ -63,7 +36,9 @@ async function addInFavorite(element) {
         :class="el.active ? 'favorite-like' : 'favorite-desable'"
         @click="addInFavorite(el)"
       ></button>
-      <button class="in_basket" @click="addInBasket(el)">В корзину</button>
+      <button class="in_basket" @click="addInBasket(el, store)">
+        В корзину
+      </button>
     </div>
   </div>
 </template>

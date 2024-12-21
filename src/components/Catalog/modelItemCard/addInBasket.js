@@ -1,5 +1,5 @@
 import { useItemStore } from "../../../stores/item";
-import { useCatalogStore } from "../stores/CatalogStore";
+import { useItemCardStore } from "../stores/ItemCardStore";
 
 const element = {};
 
@@ -10,6 +10,6 @@ export const addInBasket = (ItemData, price, weight) => {
   element["categories"] = ItemData.categories;
   element["active"] = !ItemData.active;
   element["id"] = ItemData.id;
-  useCatalogStore().flagAdded = !useCatalogStore().flagAdded;
+  useItemCardStore().flagAdded = !useItemCardStore().flagAdded;
   useItemStore().ItemsInBasket.push(element);
 };

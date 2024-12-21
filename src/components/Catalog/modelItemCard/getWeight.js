@@ -1,4 +1,4 @@
-import { useCatalogStore } from "../stores/CatalogStore";
+import { useItemCardStore } from "../stores/ItemCardStore";
 export const getWeight = (target) => {
-  useCatalogStore().weight = Number(target);
+  useItemCardStore().weight = Number(target);
 };

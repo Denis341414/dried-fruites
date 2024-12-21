@@ -8,6 +8,8 @@ import Main_footer from "../Main_page/main/main_footer.vue";
 import { RouterLink } from "vue-router";
 import { APIClient } from "../../api/ApiClient";
 import { Keys } from "./keys/CatalogKeys";
+import { getCategories } from "./modelCatalog.js/getCategories";
+import { addInFavorite } from "./utils/addInFavorite";
 
 const arrDriedFruits = ref([]);
 const arrSort = ref([]);
@@ -16,33 +18,28 @@ const pages = ref();
 const search = ref("");
 const searchResult = ref({});
 
-const useSearchFruit = () => {
-  searchFruit(searchResult, arrDriedFruits, search);
-};
+// const useSearchFruit = () => {
+//   searchFruit(searchResult, arrDriedFruits, search);
+// };
 
 onMounted(async () => {
-  arrDriedFruits.value = await APIClient.getRes();
+  arrDriedFruits.value = APIClient.getRes;
 });
 
-async function addInFavorite(element) {
-  try {
-    element.active = !element.active;
-    if (element.active == true) {
-      localStorage.setItem(element["name"], JSON.stringify(element));
-      await axios.post(
-        "https://7425c7118c450585.mokky.dev/favorites",
-        JSON.parse(localStorage.getItem(element["name"]))
-      );
-    }
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-function getCategories(event) {
-  categories.value = event.target.innerText.toLowerCase();
-  console.log(categories.value);
-}
+// async function addInFavorite(element) {
+//   try {
+//     element.active = !element.active;
+//     if (element.active == true) {
+//       localStorage.setItem(element["name"], JSON.stringify(element));
+//       await axios.post(
+//         "https://7425c7118c450585.mokky.dev/favorites",
+//         JSON.parse(localStorage.getItem(element["name"]))
+//       );
+//     }
+//   } catch (error) {
+//     console.log(error);
+//   }
+// }
 
 function Sorted() {
   searchResult.value = "";
@@ -105,7 +102,7 @@ onMounted(inject("scrollTo"));
               class="search_input"
             />
             <button
-              @click="useSearchFruit(searchResult, arrDriedFruits, search)"
+              @click="SearchFruit(searchResult, arrDriedFruits, search)"
               class="search_button"
             >
               <img src="../Main_page/header/assets/search.svg" alt="search" />
